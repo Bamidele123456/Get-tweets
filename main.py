@@ -23,8 +23,8 @@ times = Hours * 60
 
 URL = "https://x.com/i/flow/login"
 login = "https://x.com/i/flow/login"
-username = 'Ashhlyynxo'
-password = 'Ayelen@123'
+username = ''
+password = ''
 while True:
     try:
         with open('logs.txt', 'r') as f:
