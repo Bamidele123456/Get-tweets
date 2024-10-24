@@ -10,8 +10,7 @@ from selenium.webdriver.common.keys import Keys
 import time
 import threading
 
-# Ashhlyynxo
-# Ayelen@123
+
 
 
 # Function to handle the Selenium scraping in a separate thread
