@@ -26,8 +26,8 @@ def test():
     options.headless = False
     URL = "https://x.com/i/flow/login"
     login = "https://x.com/i/flow/login"
-    username = 'Ashhlyynxo'
-    password = 'Ayelen@123'
+    username = ''
+    password = ''
 
     s = Service('C:/Users/ACER/Downloads/chromedriver.exe')
     driver = webdriver.Chrome(service=s)
