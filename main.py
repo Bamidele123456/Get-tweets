@@ -9,101 +9,22 @@ from bs4 import BeautifulSoup
 
 
 from selenium.webdriver.common.keys import Keys
+from twitter_scraper import scrape_tweets
+
 
 options = Options()
 options.headless = False
 
 s=Service('C:/Users/ACER/Downloads/chromedriver.exe')
 driver = webdriver.Chrome(service=s)
-Query = "Banana"
-Country = "USA"
-Hours = 1
-
-times = Hours * 60
-
-URL = "https://x.com/i/flow/login"
-login = "https://x.com/i/flow/login"
-username = ''
-password = ''
-while True:
-    try:
-        with open('logs.txt', 'r') as f:
-            cookies = eval(f.read())
 
 
-        driver.get(f"https://x.com/search?q={Query} {Country}&src=typed_query")
-
-        # Add cookies to the driver
-        for cookie in cookies:
-            driver.add_cookie(cookie)
-        driver.refresh()
-        time.sleep(5)
-        # driver.get('https://x.com/search?q=dog&src=typed_query')
-        time.sleep(20)
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-        aria_labels = soup.find_all('div', {'role': 'group'})
-        all_data = []  # To store data from all aria-labels
-
-        # Loop over aria_labels and extract the data
-        for div in aria_labels:
-            aria_label = div.get('aria-label')  # Get the aria-label attribute from each div
-            if aria_label:  # Make sure it exists
-                data = {}
-                for item in aria_label.split(', '):
-                    value, key = item.split(' ')
-                    # Store in the dictionary with the value as a string
-                    if key in ['replies', 'reposts', 'likes', 'bookmarks', 'views']:
-                        data[key] = value  # Keep the value as a string
-                    else:
-                        try:
-                            data[key] = int(value.replace('K', '000').replace('M', '000000'))
-                        except ValueError:
-                            print(f"ValueError: Unable to convert '{value}' to an integer for key '{key}'")
-                            data[key] = 0  # or some other default value
-
-                # Find the closest <a> tag containing the post link within the parent of this aria-label
-                parent_div = div.find_parent('article')  # or another parent tag that groups each post
-                if parent_div:
-                    post_link = parent_div.find('a', {'role': 'link', 'href': True, 'href': lambda
-                        href: '/status/' in href})  # Find the link with '/status/' in the href
-                    if post_link:
-                        post_url = post_link.get('href')
-                        full_url = f"https://twitter.com{post_url}"  # Construct the full URL to the post
-                        data['post_url'] = full_url  # Add the URL to the data
-                    else:
-                        data['post_url'] = 'No link found'  # Handle cases where no link is found
-
-                # Append the extracted data for this div to the list
-                all_data.append(data)
-
-        # Output the extracted data from all aria-labels, including URLs
-        print(all_data)
-    except FileNotFoundError:
-
-        # Open Twitter URL in Chrome
-        time.sleep(5)
-        driver.get(login)
-        time.sleep(60)
-        input_field = driver.find_element(by="name", value="text")
-        time.sleep(10)
-
-        input_field.send_keys(username)
-        time.sleep(10)
-        input_field.send_keys(Keys.ENTER)
-        time.sleep(10)
-
-        password_field = driver.find_element(by="name", value="password")
-        time.sleep(10)
-        # Type your password into the password field
-        password_field.send_keys(password)
-        time.sleep(10)
-        password_field.send_keys(Keys.ENTER)
-        time.sleep(90)
-        time.sleep(90)
-        time.sleep(90)
-        cookies = driver.get_cookies()
-        # Save the cookies to a file
-        with open('logs.txt', 'w') as f:
-            f.write(str(cookies))
-    time.sleep(times)
+if __name__ == "__main__":
+    Query = "Banana"
+    Country = "USA"
+    Hours = 1
+    username = ''
+    password = ''
+    cookies_file_path = 'logs.txt'
+    all_data = scrape_tweets(query=Query, country=Country, hours=Hours, username=username, password=password, cookies_file_path=cookies_file_path)
+    print(all_data)
